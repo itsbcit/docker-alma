@@ -1,10 +1,19 @@
 ---
-image_name: alma
+image_name: almalinux
 registries:
   - url: bcit.io
 labels:
-  maintainer: "jesse@weisner.ca, chriswood.ca@gmail.com"
+  maintainer: "liz.mey.kraft@gmail.com, jesse@weisner.ca, chriswood.ca@gmail.com"
+versions:
+  '8.6':
+  '9':
+variants:
+  '':
+  supervisord:
+    files:
+      - supervisor.conf
 vars:
+  source_image: almalinux
   tini_version: '0.19.0'
   de_version: '1.5'
   dockerize_version: '0.6.1'
