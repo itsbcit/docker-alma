@@ -18,3 +18,13 @@ ENV HOME /
 
 ENTRYPOINT ["/tini", "--", "/docker-entrypoint.sh"]
 CMD [ "init-loop" ]
+
+<% if image.variant == 'supervisord' -%>
+# Install & configure supervisor
+RUN yum -y --setopt tsflags=nodocs --setopt timeout=5 install \
+        supervisor \
+ && mkdir -p /etc/supervisor/conf.d
+COPY supervisor.conf /etc/supervisor.conf
+
+CMD ["supervisord", "-c", "/etc/supervisor.conf"]
+<% end -%>
