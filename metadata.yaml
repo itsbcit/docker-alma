@@ -2,10 +2,11 @@
 image_name: almalinux
 registries:
   - url: bcit.io
+test_command: sleep infinity
 labels:
   maintainer: "liz.mey.kraft@gmail.com, jesse@weisner.ca, chriswood.ca@gmail.com"
 versions:
-  '8.6':
+  '8':
   '9':
 variants:
   '':
