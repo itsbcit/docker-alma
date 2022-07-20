@@ -16,6 +16,8 @@ ENTRYPOINT ["/tini", "--", "/docker-entrypoint.sh"]
 CMD [ "init-loop" ]
 
 <% if image.variant == 'supervisord' -%>
+RUN yum -y install epel-release
+
 # Install & configure supervisor
 RUN yum -y --setopt tsflags=nodocs --setopt timeout=5 install \
         supervisor \
