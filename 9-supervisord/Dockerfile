@@ -1,7 +1,7 @@
 FROM almalinux:9
 
 LABEL maintainer="liz.mey.kraft@gmail.com, jesse@weisner.ca, chriswood.ca@gmail.com"
-LABEL build_id="1658351261"
+LABEL build_id="1658352669"
 
 ENV TZ America/Vancouver
 ENV RUNUSER none
@@ -38,6 +38,8 @@ RUN chmod +x /tini \
 
 ENTRYPOINT ["/tini", "--", "/docker-entrypoint.sh"]
 CMD [ "init-loop" ]
+
+RUN yum -y install epel-release
 
 # Install & configure supervisor
 RUN yum -y --setopt tsflags=nodocs --setopt timeout=5 install \
