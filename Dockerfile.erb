@@ -13,8 +13,6 @@ ENV HOME /
 <%= snippet('tini', binding) -%>
 
 ENTRYPOINT ["/tini", "--", "/docker-entrypoint.sh"]
-CMD [ "init-loop" ]
-
 <% if image.variant == 'supervisord' -%>
 RUN yum -y install epel-release
 
