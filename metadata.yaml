@@ -1,10 +1,20 @@
 ---
-image_name: alma
+image_name: almalinux
 registries:
   - url: bcit.io
+test_command: sleep infinity
 labels:
-  maintainer: "jesse@weisner.ca, chriswood.ca@gmail.com"
+  maintainer: "liz.mey.kraft@gmail.com, jesse@weisner.ca, chriswood.ca@gmail.com"
+versions:
+  '8':
+  '9':
+variants:
+  '':
+  supervisord:
+    files:
+      - supervisor.conf
 vars:
+  source_image: almalinux
   tini_version: '0.19.0'
-  de_version: '1.5'
+  de_version: '1.6'
   dockerize_version: '0.6.1'
