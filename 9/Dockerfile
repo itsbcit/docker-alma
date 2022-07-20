@@ -1,11 +1,23 @@
 FROM almalinux:9
 
 LABEL maintainer="liz.mey.kraft@gmail.com, jesse@weisner.ca, chriswood.ca@gmail.com"
-LABEL build_id="1658352669"
+LABEL build_id="1658356806"
 
 ENV TZ America/Vancouver
 ENV RUNUSER none
 ENV HOME /
+
+RUN rm -rf /var/cache/yum/* \
+ && echo "exclude=mirror.layeronline.com" >> /etc/yum/pluginconf.d/fastestmirror.conf
+
+RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY* \
+ && yum -y --setopt tsflags=nodocs --setopt timeout=5 update \
+ && yum -y --setopt tsflags=nodocs --setopt timeout=5 install \
+    wget \
+    epel-release \
+    tar \
+    rsync \
+ && rm -rf /var/cache/yum/*
 
 # Add docker-entrypoint script base
 ADD https://github.com/itsbcit/docker-entrypoint/releases/download/v1.6/docker-entrypoint.tar.gz /docker-entrypoint.tar.gz
@@ -37,5 +49,10 @@ RUN chmod +x /tini \
  && ln -s /tini /sbin/tini 
 
 ENTRYPOINT ["/tini", "--", "/docker-entrypoint.sh"]
-CMD [ "init-loop" ]
+
+RUN rm -rf /var/log/* \
+ && chmod 1777 /var/log \
+ && ln -svf "/usr/share/zoneinfo/${TZ}" /etc/localtime \
+ && echo "${TZ}" > /etc/timezone \
+ && chmod 664 /etc/timezone /etc/localtime
 
