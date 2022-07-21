@@ -1,6 +1,22 @@
-FROM busybox
+FROM <%= image.vars['source_image'] %>:<%= image.version %>
 
 <%= snippet('labels', binding) -%>
+
+ENV TZ America/Vancouver
+ENV RUNUSER none
+ENV HOME /
+
+RUN rm -rf /var/cache/yum/* \
+ && echo "exclude=mirror.layeronline.com" >> /etc/yum/pluginconf.d/fastestmirror.conf
+
+RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY* \
+ && yum -y --setopt tsflags=nodocs --setopt timeout=5 update \
+ && yum -y --setopt tsflags=nodocs --setopt timeout=5 install \
+    wget \
+    epel-release \
+    tar \
+    rsync \
+ && rm -rf /var/cache/yum/*
 
 <%= snippet('docker-entrypoint', binding) -%>
 
@@ -9,4 +25,19 @@ FROM busybox
 <%= snippet('tini', binding) -%>
 
 ENTRYPOINT ["/tini", "--", "/docker-entrypoint.sh"]
-CMD [ "init-loop" ]
+
+RUN rm -rf /var/log/* \
+ && chmod 1777 /var/log \
+ && ln -svf "/usr/share/zoneinfo/${TZ}" /etc/localtime \
+ && echo "${TZ}" > /etc/timezone \
+ && chmod 664 /etc/timezone /etc/localtime
+
+<% if image.variant == 'supervisord' -%>
+# Install & configure supervisor
+RUN yum -y --setopt tsflags=nodocs --setopt timeout=5 install \
+        supervisor \
+ && mkdir -p /etc/supervisor/conf.d
+COPY supervisor.conf /etc/supervisor.conf
+
+CMD ["supervisord", "-c", "/etc/supervisor.conf"]
+<% end -%>
